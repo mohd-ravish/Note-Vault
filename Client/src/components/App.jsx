@@ -1,89 +1,72 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-// import Footer from "./Footer";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
+import Validation from "./Validation";
+import "./css/app.css"
 
 function App() {
 
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
+  const [details, setDetails] = useState({
+    title: "",
+    content: ""
+  })
+
+  const [errors, setErrors] = useState([]);
+
+  const inputDetails = (event) => {
+    setDetails(prev => ({ ...prev, [event.target.name]: [event.target.value] }))
+  }
+
   const [notes, setNotes] = useState([]);
 
-  function submitNote(event) {
-    Axios.post("http://localhost:4500/", {
-      title: title,
-      content: content,
-    });
-
-    // setNotes([
-    //   ...notes,
-    //   {
-    //     title: title,
-    //     content: content,
-    //   },
-    // ]);
-    // setTitle("");
-    // setContent("");
-    // event.preventDefault();
+  const submitNote = (event) => {
+    setErrors(Validation(details));
+    // if (errors.title === "" && errors.content === "") {
+    Axios.post("http://localhost:4500/note/insert", details);
+    // };
   };
 
   useEffect(() => {
-    Axios.get("http://localhost:4500/").then((Response) => {
+    Axios.get("http://localhost:4500/note/get").then((Response) => {
       setNotes(Response.data)
     });
   }, []);
 
-  // const deleteNote = (titleVal) => {
-  //   Axios.delete(`http://localhost:4500/${titleVal}`);
-  // };
+  
 
-  const deleteNote = (title) => {
-    // Axios.delete(`http://localhost:4500/${titleVal}`);
-    Axios.delete("http://localhost:4500/" + title);
+  const deleteNote = (value) => {
+    Axios.delete("http://localhost:4500/note/delete/" + value);
     window.location.reload(false)
   };
 
-  // function addNote(newNote) {
-  //   setNotes(prevNotes => {
-  //     return [...prevNotes, newNote];
-  //   });
-  // }
+  const navigate = useNavigate();
 
-  // function deleteNote(id) {
-  //   setNotes(prevNotes => {
-  //     return prevNotes.filter((noteItem, index) => {
-  //       return index !== id;
-  //     });
-  //   });
-  // }
+  function logout(){
+    navigate("/");
+  }
 
   return (
     <div>
-      <Header />
+      <header>
+        <img src="assets/notes.png"></img>
+        <h1>Note-Vault <button type="submit" onClick={logout}>LOGOUT</button> </h1>
+      </header>
       <div>
-        <form>
+        <form className="inputArea">
           <input
             name="title"
             type="text"
-            required
-            onChange={(e) => {
-              setTitle(e.target.value)
-            }}
-            // value={note.title}
+            onChange={inputDetails}
             placeholder="Title"
           />
           <textarea
             name="content"
             type="text"
-            required
-            onChange={(e) => {
-              setContent(e.target.value)
-            }}
-            // value={note.content}
+            onChange={inputDetails}
             placeholder="Take a note..."
             rows="3"
           />
-          <button onClick={submitNote}>+</button>
+          <button onClick={() => { submitNote() }}>+</button>
         </form>
       </div>
       {notes.map((noteItem) => {
@@ -91,11 +74,10 @@ function App() {
           <div className="note">
             <h1>{noteItem.title}</h1>
             <p>{noteItem.content}</p>
-            <button onClick={() => {deleteNote(noteItem.title)}}>DELETE</button>
+            <button onClick={() => { deleteNote(noteItem.c_id) }}>DELETE</button>
           </div>
         );
       })}
-      {/* <Footer /> */}
     </div>
   );
 }
