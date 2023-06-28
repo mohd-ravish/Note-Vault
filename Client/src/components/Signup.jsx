@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Axios from "axios";
 import Validation from "./Validation";
 import Footer from "./Footer";
@@ -26,8 +29,10 @@ function Signup() {
         setErrors(Validation(details));
         if (errors.email === "" && errors.password === "") {
             Axios.post("http://localhost:4500/signup", details)
-                .then(navigate("/"));
-        };
+                .then(toast.success("User Registered!", {
+                    position: toast.POSITION.TOP_CENTER
+                }))
+        }
     }
 
     return (
@@ -36,13 +41,14 @@ function Signup() {
                 <img src="assets/notes.png"></img>
                 <h1>Note-Vault </h1>
             </header>
+            <ToastContainer />
             <div className='login-container'>
                 <div className='login-box'>
                     <form action="" onSubmit={submitDetails}>
                         <h2>SIGN UP</h2>
                         <div>
                             <label htmlFor="name"><strong>Name</strong></label>
-                            <input onChange={inputDetails} type="text" placeholder="Enter Name" className="input" name="name" required autoComplete="off"/>
+                            <input onChange={inputDetails} type="text" placeholder="Enter Name" className="input" name="name" required autoComplete="off" />
                             {/* {errors.name && <span className="text-danger">{errors.name}</span>} */}
                         </div>
                         <div className='mb-3'>
@@ -63,7 +69,7 @@ function Signup() {
                     </form>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 }
