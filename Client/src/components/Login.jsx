@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Axios from "axios";
-import Validation from "./Validation";
 import Footer from "./Footer";
 import "./css/login-signup.css";
 
@@ -14,8 +13,6 @@ function Login() {
         password: ""
     })
 
-    const [errors, setErrors] = useState([]);
-
     const inputDetails = (event) => {
         setDetails(prev => ({ ...prev, [event.target.name]: [event.target.value] }))
     }
@@ -24,20 +21,21 @@ function Login() {
 
     const submitDetails = (event) => {
         event.preventDefault();
-        setErrors(Validation(details));
-        if (errors.email === "" && errors.password === "") {
-            Axios.post("http://localhost:4500/login", details)
-                .then(res => {
-                    if (res.data === "Success") {
-                        navigate("/notes")
-                    } else {
-                        toast.error("No record exists!", {
-                            position: toast.POSITION.TOP_CENTER
-                        })
-                    }
-                })
-                .catch(err => console.log(err));
-        }
+        Axios.post("http://localhost:4500/login", details)
+            .then(res => {
+                if (res.data === "Success") {
+                    navigate("/notes")
+                } else {
+                    toast.error("No record exists!", {
+                        position: toast.POSITION.TOP_CENTER
+                    })
+                    setDetails({
+                        email : "",
+                        password : ""
+                    })
+                }
+            })
+        // .catch(err => console.log(err))
     }
 
     return (
@@ -53,12 +51,26 @@ function Login() {
                         <h2>LOGIN</h2>
                         <div>
                             <label htmlFor="email"><strong>Email</strong></label>
-                            <input className='input' onChange={inputDetails} type="username" placeholder="Enter Email" name="email" required />
+                            <input
+                                className='input'
+                                onChange={inputDetails}
+                                type="email"
+                                placeholder="Enter Email"
+                                name="email"
+                                value={details.email}
+                                required />
                             {/* {errors.email && <span className="text-danger">{errors.email}</span>} */}
                         </div>
                         <div>
                             <label htmlFor="password"><strong>Password</strong></label>
-                            <input className='input' onChange={inputDetails} type="password" placeholder="Enter Password" name="password" required />
+                            <input
+                                className='input'
+                                onChange={inputDetails}
+                                type="password"
+                                placeholder="Enter Password"
+                                name="password"
+                                value={details.password}
+                                required />
                             {/* {errors.password && <span className="text-danger">{errors.password}</span>} */}
                         </div>
                         <button type="submit" className="login-button"> Log in</button>

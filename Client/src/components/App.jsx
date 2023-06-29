@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import Validation from "./Validation";
 import "./css/app.css"
 
 function App() {
@@ -11,8 +10,6 @@ function App() {
     content: ""
   })
 
-  const [errors, setErrors] = useState([]);
-
   const inputDetails = (event) => {
     setDetails(prev => ({ ...prev, [event.target.name]: [event.target.value] }))
   }
@@ -20,10 +17,9 @@ function App() {
   const [notes, setNotes] = useState([]);
 
   const submitNote = (event) => {
-    setErrors(Validation(details));
-    // if (errors.title === "" && errors.content === "") {
+    if (details.title !== "" && details.content !== "") {
     Axios.post("http://localhost:4500/note/insert", details);
-    // };
+    };
   };
 
   useEffect(() => {
@@ -58,14 +54,14 @@ function App() {
             type="text"
             onChange={inputDetails}
             placeholder="Title"
-          />
+            required />
           <textarea
             name="content"
             type="text"
             onChange={inputDetails}
             placeholder="Take a note..."
             rows="3"
-          />
+            required />
           <button onClick={() => { submitNote() }}>+</button>
         </form>
       </div>
