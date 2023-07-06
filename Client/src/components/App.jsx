@@ -28,8 +28,6 @@ function App() {
     });
   }, []);
 
-  
-
   const deleteNote = (value) => {
     Axios.delete("http://localhost:4500/note/delete/" + value);
     window.location.reload(false)
@@ -44,7 +42,7 @@ function App() {
   return (
     <div>
       <header>
-        <img src="assets/notes.png"></img>
+        <img src="assets/notes.png" alt="logo"></img>
         <h1>Note-Vault <button type="submit" onClick={logout}>LOGOUT</button> </h1>
       </header>
       <div>

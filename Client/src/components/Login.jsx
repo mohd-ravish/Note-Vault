@@ -41,7 +41,7 @@ function Login() {
     return (
         <div>
             <header>
-                <img src="assets/notes.png"></img>
+                <img src="assets/notes.png" alt="logo"></img>
                 <h1>Note-Vault </h1>
             </header>
             <ToastContainer />
