@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import App from "./components/App";
 import Login from "./components/Login";
-import Signup from "./components/Signup";
 
 import {
     createBrowserRouter,
@@ -16,10 +15,6 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Login />
-    },
-    {
-        path: "/signup",
-        element: <Signup />
     },
     {
         path: "/notes",
